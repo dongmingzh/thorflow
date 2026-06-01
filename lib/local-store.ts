@@ -1,4 +1,4 @@
-import { mockPatients, type Patient } from "./mock-data";
+import { migratePatient, mockPatients, type Patient } from "./mock-data";
 
 const STORAGE_KEY = "thorflow-patients-v1";
 const STORAGE_VERSION = 1;
@@ -30,7 +30,9 @@ export function savePatients(patients: Patient[]): void {
 
 export function initializePatients(): Patient[] {
   const stored = loadPatients();
-  if (stored && stored.length > 0) return stored;
+  if (stored && stored.length > 0) {
+    return stored.map((p) => migratePatient(p));
+  }
   return mockPatients;
 }
 

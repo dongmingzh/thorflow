@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Plus, Search } from "lucide-react";
+import { Bell, Plus, Search, Smartphone } from "lucide-react";
 import Link from "next/link";
 
 import { DataActions } from "@/components/dashboard/data-actions";
@@ -52,6 +52,13 @@ export function DashboardHeader({
           </div>
         )}
         <DataActions />
+        <Link
+          href="/patient-mini"
+          className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-medium text-teal-700 transition hover:bg-teal-100"
+        >
+          <Smartphone className="h-4 w-4" />
+          患者小程序
+        </Link>
         {onAddPatient && (
           <button
             type="button"

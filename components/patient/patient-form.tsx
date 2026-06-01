@@ -8,6 +8,7 @@ import type {
   RiskLevel,
   WorkflowStage,
 } from "@/lib/mock-data";
+import { DEFAULT_PREOP_TASKS } from "@/lib/mock-data";
 import {
   createTimelineFromTemplate,
   WORKFLOW_TEMPLATES,
@@ -317,6 +318,11 @@ export function formDataToPatient(data: PatientFormData): Omit<Patient, "id"> {
       },
     ],
     imaging: [],
+    currentStatus: "pending_checkin",
+    tasks: DEFAULT_PREOP_TASKS,
+    notifications: [],
+    surgery: { scheduledDate: data.surgeryDate || undefined },
+    pathology: {},
   };
 }
 

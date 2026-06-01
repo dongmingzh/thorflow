@@ -18,8 +18,21 @@ import {
   initializePatients,
   savePatients,
 } from "@/lib/local-store";
-import type { Patient, TimelineNode } from "@/lib/mock-data";
+import type {
+  Patient,
+  PatientNotification,
+  PathologyInfo,
+  TimelineNode,
+} from "@/lib/mock-data";
 import { mockPatients } from "@/lib/mock-data";
+import type { FollowupPlan, PathologyInput } from "@/lib/followup-templates";
+import { formatNotificationBody } from "@/lib/notification-templates";
+import {
+  generateFollowupPlanFromPathology,
+  generatePatientNotification,
+  generateTimelineEvent,
+  type PatientWorkflowStatus,
+} from "@/lib/workflow-engine";
 import {
   addTimelineNode,
   advanceTimelineNode,
@@ -52,6 +65,36 @@ interface PatientWorkflowContextValue {
   exportData: () => void;
   importData: (file: File) => Promise<void>;
   resetAllData: () => void;
+  pushNotification: (
+    patientId: string,
+    notification: Omit<PatientNotification, "id" | "createdAt" | "read"> & {
+      id?: string;
+    }
+  ) => void;
+  pushNotificationFromTemplate: (
+    patientId: string,
+    templateKey: string,
+    vars?: Record<string, string>
+  ) => void;
+  updateCurrentStatus: (
+    patientId: string,
+    status: PatientWorkflowStatus,
+    note?: string
+  ) => void;
+  scheduleSurgery: (patientId: string, surgeryDate: string) => void;
+  markSurgeryMilestone: (
+    patientId: string,
+    milestone: "in_or" | "completed" | "icu" | "ward"
+  ) => void;
+  savePathologyAndFollowup: (
+    patientId: string,
+    pathology: PathologyInfo,
+    input: PathologyInput
+  ) => FollowupPlan | null;
+  updatePatientTasks: (
+    patientId: string,
+    tasks: Patient["tasks"]
+  ) => void;
 }
 
 const PatientWorkflowContext = createContext<PatientWorkflowContextValue | null>(
@@ -219,6 +262,192 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
     setPatients(mockPatients);
   }, []);
 
+  const pushNotification = useCallback(
+    (
+      patientId: string,
+      notification: Omit<PatientNotification, "id" | "createdAt" | "read"> & {
+        id?: string;
+      }
+    ) => {
+      const item: PatientNotification = {
+        id: notification.id ?? `notif-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        ...notification,
+      };
+      setPatients((prev) =>
+        prev.map((p) =>
+          p.id === patientId
+            ? { ...p, notifications: [item, ...p.notifications] }
+            : p
+        )
+      );
+    },
+    []
+  );
+
+  const pushNotificationFromTemplate = useCallback(
+    (
+      patientId: string,
+      templateKey: string,
+      vars?: Record<string, string>
+    ) => {
+      const raw = generatePatientNotification(templateKey);
+      pushNotification(patientId, {
+        title: raw.title,
+        body: vars
+          ? formatNotificationBody(templateKey, vars)
+          : raw.body,
+        category: raw.category,
+      });
+    },
+    [pushNotification]
+  );
+
+  const updateCurrentStatus = useCallback(
+    (patientId: string, status: PatientWorkflowStatus, note?: string) => {
+      setPatients((prev) =>
+        prev.map((p) => {
+          if (p.id !== patientId) return p;
+          const evt = generateTimelineEvent({
+            patientId,
+            patientName: p.name,
+            status,
+            note,
+          });
+          return {
+            ...p,
+            currentStatus: status,
+            timeline: [...p.timeline, evt],
+          };
+        })
+      );
+    },
+    []
+  );
+
+  const scheduleSurgery = useCallback(
+    (patientId: string, surgeryDate: string) => {
+      setPatients((prev) =>
+        prev.map((p) => {
+          if (p.id !== patientId) return p;
+          const timeline = advanceTimelineNode(p.timeline, "mdt");
+          const advanced = advanceTimelineNode(timeline, "surgery");
+          return {
+            ...p,
+            surgeryDate,
+            currentStatus: "surgery_scheduled",
+            status: syncPatientStatus(advanced),
+            timeline: advanced,
+            surgery: {
+              ...p.surgery,
+              scheduledDate: surgeryDate,
+            },
+            flags: { ...p.flags, readyForSurgeryReview: false },
+          };
+        })
+      );
+      const formatted = surgeryDate.replace(/(\d{4})-(\d{2})-(\d{2})/, "$2月$3日");
+      pushNotificationFromTemplate(patientId, "surgery_scheduled", {
+        date: formatted || surgeryDate,
+      });
+    },
+    [pushNotificationFromTemplate]
+  );
+
+  const markSurgeryMilestone = useCallback(
+    (patientId: string, milestone: "in_or" | "completed" | "icu" | "ward") => {
+      const config: Record<
+        typeof milestone,
+        {
+          status: PatientWorkflowStatus;
+          template: string;
+          surgery: Partial<Patient["surgery"]>;
+          workflowStage?: Patient["status"];
+        }
+      > = {
+        in_or: {
+          status: "in_surgery",
+          template: "entered_or",
+          surgery: { inOR: true },
+          workflowStage: "Surgery",
+        },
+        completed: {
+          status: "in_icu",
+          template: "surgery_completed_icu",
+          surgery: { inOR: false, completed: true, inICU: true },
+          workflowStage: "Surgery",
+        },
+        icu: {
+          status: "in_icu",
+          template: "surgery_completed_icu",
+          surgery: { inICU: true },
+        },
+        ward: {
+          status: "post_op_recovery",
+          template: "back_to_ward",
+          surgery: { inICU: false, backToWard: true },
+          workflowStage: "Pathology",
+        },
+      };
+      const cfg = config[milestone];
+      setPatients((prev) =>
+        prev.map((p) => {
+          if (p.id !== patientId) return p;
+          const evt = generateTimelineEvent({
+            patientId,
+            patientName: p.name,
+            status: cfg.status,
+          });
+          return {
+            ...p,
+            currentStatus: cfg.status,
+            status: cfg.workflowStage ?? p.status,
+            surgery: { ...p.surgery, ...cfg.surgery },
+            timeline: [...p.timeline, evt],
+          };
+        })
+      );
+      pushNotificationFromTemplate(patientId, cfg.template);
+    },
+    [pushNotificationFromTemplate]
+  );
+
+  const savePathologyAndFollowup = useCallback(
+    (patientId: string, pathology: PathologyInfo, input: PathologyInput) => {
+      const plan = generateFollowupPlanFromPathology(input);
+      setPatients((prev) =>
+        prev.map((p) => {
+          if (p.id !== patientId) return p;
+          const evt = generateTimelineEvent({
+            patientId,
+            patientName: p.name,
+            status: "followup_plan_generated",
+            note: `${input.pathologyType} · ${input.stage}`,
+          });
+          return {
+            ...p,
+            pathology: { ...pathology, reportedAt: new Date().toISOString().slice(0, 10) },
+            followupPlan: plan,
+            currentStatus: "followup_plan_generated",
+            status: "Follow-up",
+            timeline: [...p.timeline, evt],
+          };
+        })
+      );
+      pushNotificationFromTemplate(patientId, "followup_plan_ready");
+      return plan;
+    },
+    [pushNotificationFromTemplate]
+  );
+
+  const updatePatientTasks = useCallback(
+    (patientId: string, tasks: Patient["tasks"]) => {
+      updatePatient(patientId, { tasks });
+    },
+    [updatePatient]
+  );
+
   const value = useMemo(
     () => ({
       patients,
@@ -237,6 +466,13 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
       exportData,
       importData,
       resetAllData,
+      pushNotification,
+      pushNotificationFromTemplate,
+      updateCurrentStatus,
+      scheduleSurgery,
+      markSurgeryMilestone,
+      savePathologyAndFollowup,
+      updatePatientTasks,
     }),
     [
       patients,
@@ -255,6 +491,13 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
       exportData,
       importData,
       resetAllData,
+      pushNotification,
+      pushNotificationFromTemplate,
+      updateCurrentStatus,
+      scheduleSurgery,
+      markSurgeryMilestone,
+      savePathologyAndFollowup,
+      updatePatientTasks,
     ]
   );
 

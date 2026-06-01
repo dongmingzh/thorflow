@@ -195,10 +195,25 @@ export function getWorkflowProgress(timeline: TimelineNode[]): number {
   return Math.round((completed / timeline.length) * 100);
 }
 
+export function getPatientsReadyForSurgeryReview(
+  patients: Patient[]
+): Patient[] {
+  return patients.filter((p) => p.flags?.readyForSurgeryReview);
+}
+
 export function generateWorkflowNotifications(
   patients: Patient[]
 ): WorkflowNotification[] {
   const notifications: WorkflowNotification[] = [];
+
+  getPatientsReadyForSurgeryReview(patients).forEach((p) => {
+    notifications.push({
+      id: `review-${p.id}`,
+      type: "info",
+      message: `${p.name}已完成全部术前检查，等待医生审核并安排手术。`,
+      href: `/dashboard/preop?patient=${p.id}`,
+    });
+  });
 
   patients
     .filter((p) => p.riskLevel === "High" && p.status === "Pre-op")

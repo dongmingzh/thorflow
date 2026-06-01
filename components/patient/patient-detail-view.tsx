@@ -1,8 +1,10 @@
 "use client";
 
 import { AIAnalysisPanel } from "@/components/patient/ai-analysis-panel";
+import { PathologyEntryPanel } from "@/components/patient/pathology-entry-panel";
 import { PerioperativeTimeline } from "@/components/patient/perioperative-timeline";
 import { PatientSidebar } from "@/components/patient/patient-sidebar";
+import { SurgeryActionPanel } from "@/components/patient/surgery-action-panel";
 import { TodayTodos } from "@/components/patient/today-todos";
 import { WorkflowNotificationBar } from "@/components/dashboard/workflow-notification-bar";
 import { usePatientWorkflow } from "@/components/providers/patient-workflow-provider";
@@ -44,6 +46,12 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
             <div className="mt-8">
               <PerioperativeTimeline patientId={patientId} />
             </div>
+            <SurgeryActionPanel patient={patient} />
+            {(patient.status === "Pathology" ||
+              patient.currentStatus === "pathology_reported" ||
+              patient.currentStatus === "discharged_waiting_pathology") && (
+              <PathologyEntryPanel patient={patient} />
+            )}
           </div>
         </main>
         <aside className="w-full shrink-0 border-t border-border bg-card p-6 lg:w-[300px] lg:border-l lg:border-t-0 xl:w-[360px]">

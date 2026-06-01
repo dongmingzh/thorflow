@@ -1,3 +1,6 @@
+import type { FollowupPlan } from "./followup-templates";
+import type { PatientWorkflowStatus } from "./workflow-engine";
+
 export type TimelineStatus = "completed" | "current" | "pending";
 
 export type WorkflowStage = "Pre-op" | "Surgery" | "Pathology" | "Follow-up";
@@ -45,6 +48,46 @@ export interface PatientAIContent {
   riskAlert: string;
 }
 
+export interface PatientNotification {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  read: boolean;
+  category: "surgery" | "exam" | "pathology" | "followup" | "general";
+}
+
+export interface PatientWorkflowTask {
+  id: string;
+  title: string;
+  subtitle?: string;
+  completed: boolean;
+}
+
+export interface SurgeryInfo {
+  scheduledDate?: string;
+  operatingRoom?: string;
+  inOR?: boolean;
+  completed?: boolean;
+  inICU?: boolean;
+  backToWard?: boolean;
+}
+
+export interface PathologyInfo {
+  pathologyType?: string;
+  stage?: string;
+  geneTest?: boolean;
+  chemo?: boolean;
+  targeted?: boolean;
+  immunotherapy?: boolean;
+  reportedAt?: string;
+}
+
+export interface PatientFlags {
+  overdue?: boolean;
+  readyForSurgeryReview?: boolean;
+}
+
 export interface Patient {
   id: string;
   name: string;
@@ -54,6 +97,7 @@ export interface Patient {
   diagnosis: string;
   clinicalStage?: string;
   status: WorkflowStage;
+  currentStatus: PatientWorkflowStatus;
   riskLevel: RiskLevel;
   surgeryDate?: string;
   treatmentGroup?: string;
@@ -63,9 +107,17 @@ export interface Patient {
   preopPlan?: string;
   templateId?: string;
   createdAt?: string;
+  phone?: string;
+  inpatientNo?: string;
   timeline: TimelineNode[];
   todos: PatientTodo[];
+  tasks: PatientWorkflowTask[];
+  notifications: PatientNotification[];
   imaging: ImagingStudy[];
+  surgery: SurgeryInfo;
+  pathology: PathologyInfo;
+  followupPlan?: FollowupPlan;
+  flags?: PatientFlags;
 }
 
 export const STANDARD_TIMELINE_TITLES = [
@@ -119,6 +171,46 @@ function buildTimeline(
 const CT_PREVIEW =
   "https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1600&auto=format&fit=crop";
 
+/** 患者端小程序 Demo 默认患者 */
+export const DEMO_MINI_PATIENT_ID = "PT-1004";
+
+export const DEFAULT_PREOP_TASKS: PatientWorkflowTask[] = [
+  { id: "pt-upload", title: "上传术前检查单", completed: false },
+  { id: "pt-ct", title: "完成增强CT", completed: false },
+  { id: "pt-pft", title: "完成肺功能", completed: false },
+  { id: "pt-ecg", title: "完成心电图", completed: false },
+  { id: "pt-anes", title: "完成麻醉评估", completed: false },
+  { id: "pt-wait", title: "等待医生审核", completed: false },
+];
+
+const COMPLETED_PREOP_TASKS: PatientWorkflowTask[] = DEFAULT_PREOP_TASKS.map(
+  (t) => ({ ...t, completed: true })
+);
+
+function defaultSurgery(scheduledDate?: string): SurgeryInfo {
+  return { scheduledDate, inOR: false, completed: false, inICU: false, backToWard: false };
+}
+
+function defaultPathology(): PathologyInfo {
+  return {};
+}
+
+function notif(
+  id: string,
+  title: string,
+  body: string,
+  category: PatientNotification["category"] = "general"
+): PatientNotification {
+  return {
+    id,
+    title,
+    body,
+    createdAt: new Date().toISOString(),
+    read: false,
+    category,
+  };
+}
+
 export const mockPatients: Patient[] = [
   {
     id: "PT-1001",
@@ -128,8 +220,20 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺结节",
     diagnosis: "右上肺混合磨玻璃结节（IA期腺癌倾向）",
     status: "Pre-op",
+    currentStatus: "exam_in_progress",
     riskLevel: "Medium",
     surgeryDate: "2026-05-22",
+    phone: "138****5621",
+    inpatientNo: "20260518001",
+    tasks: DEFAULT_PREOP_TASKS.map((t, i) => ({
+      ...t,
+      completed: i < 2,
+    })),
+    notifications: [
+      notif("n1", "术前检查提醒", "请按医嘱完成增强CT与肺功能检查，完成后在小程序上传检查单。", "exam"),
+    ],
+    surgery: defaultSurgery("2026-05-22"),
+    pathology: defaultPathology(),
     timeline: buildTimeline(
       "anesthesia",
       {
@@ -186,8 +290,16 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺腺癌",
     diagnosis: "左下肺腺癌（IA期）",
     status: "Surgery",
+    currentStatus: "in_surgery",
     riskLevel: "Low",
     surgeryDate: "2026-05-19",
+    phone: "139****8820",
+    tasks: [],
+    notifications: [
+      notif("n1", "患者已进入手术室", "您已进入手术室，家属请在等候区耐心等待。", "surgery"),
+    ],
+    surgery: { scheduledDate: "2026-05-19", inOR: true, completed: false, inICU: false, backToWard: false },
+    pathology: defaultPathology(),
     timeline: buildTimeline(
       "surgery",
       {
@@ -243,8 +355,16 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺鳞癌",
     diagnosis: "右上肺鳞癌（IIIA期）",
     status: "Pathology",
+    currentStatus: "discharged_waiting_pathology",
     riskLevel: "High",
     surgeryDate: "2026-05-18",
+    phone: "136****3309",
+    tasks: [],
+    notifications: [
+      notif("n1", "术后恢复中", "手术已完成，病理报告出具后医生将通知您制定后续方案。", "pathology"),
+    ],
+    surgery: { scheduledDate: "2026-05-18", inOR: false, completed: true, inICU: false, backToWard: true },
+    pathology: { stage: "IIIA", pathologyType: "鳞癌", geneTest: true, chemo: true },
     timeline: buildTimeline(
       "pathology",
       {
@@ -302,8 +422,19 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "微浸润腺癌",
     diagnosis: "左下肺混合磨玻璃结节（MIA倾向）",
     status: "Pre-op",
+    currentStatus: "doctor_review",
     riskLevel: "Low",
     surgeryDate: "2026-05-24",
+    phone: "186****1024",
+    inpatientNo: "20260522004",
+    flags: { readyForSurgeryReview: true },
+    tasks: COMPLETED_PREOP_TASKS,
+    notifications: [
+      notif("n1", "检查已同步", "您完成的术前检查项目已同步至医生端，请等待医生审核并安排手术。", "exam"),
+      notif("n2", "术前准备提醒", "请术前 8 小时禁食禁饮，按医嘱停用抗凝药物。", "surgery"),
+    ],
+    surgery: defaultSurgery("2026-05-24"),
+    pathology: defaultPathology(),
     timeline: buildTimeline(
       "mdt",
       {
@@ -350,8 +481,30 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺腺癌",
     diagnosis: "右中叶肺腺癌（IA期）",
     status: "Follow-up",
+    currentStatus: "in_followup",
     riskLevel: "Medium",
     surgeryDate: "2026-05-10",
+    phone: "137****6612",
+    tasks: [],
+    notifications: [
+      notif("n1", "请按随访计划复诊", "今日门诊随访，请携带出院小结与用药清单。", "followup"),
+    ],
+    surgery: { scheduledDate: "2026-05-10", completed: true, backToWard: true },
+    pathology: { pathologyType: "浸润性腺癌", stage: "IA", geneTest: false, chemo: false },
+    followupPlan: {
+      templateName: "IA期标准随访",
+      nextVisitDate: "2026-05-27",
+      nextExam: "胸部CT",
+      needsChemo: false,
+      needsGeneTest: false,
+      needsTargeted: false,
+      needsImmunotherapy: false,
+      doctorNote: "IA期术后规律影像随访，关注肺功能与营养状态。",
+      items: [
+        { id: "fu-1", title: "今日门诊随访", dueDate: "2026-05-27", type: "visit" },
+        { id: "fu-2", title: "复查胸部CT", dueDate: "2026-05-27", type: "imaging" },
+      ],
+    },
     timeline: buildTimeline(
       "followup",
       {
@@ -404,8 +557,17 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "围术期肺癌",
     diagnosis: "右上肺中央型肺癌（IIIA期，围术期管理）",
     status: "Pre-op",
+    currentStatus: "exam_in_progress",
     riskLevel: "High",
     surgeryDate: "2026-05-27",
+    flags: { overdue: true },
+    phone: "135****7788",
+    tasks: DEFAULT_PREOP_TASKS.map((t, i) => ({ ...t, completed: i < 1 })),
+    notifications: [
+      notif("n1", "检查超时提醒", "肺功能检查已超期 2 天，请尽快完成或联系护士站。", "exam"),
+    ],
+    surgery: defaultSurgery("2026-05-27"),
+    pathology: defaultPathology(),
     timeline: buildTimeline(
       "anesthesia",
       {
@@ -469,8 +631,14 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺结节",
     diagnosis: "双肺多发磨玻璃结节（右肺主病灶）",
     status: "Pre-op",
+    currentStatus: "pending_checkin",
     riskLevel: "High",
     surgeryDate: "2026-05-28",
+    phone: "158****4421",
+    tasks: DEFAULT_PREOP_TASKS,
+    notifications: [],
+    surgery: defaultSurgery("2026-05-28"),
+    pathology: defaultPathology(),
     timeline: buildTimeline(
       "mdt",
       {
@@ -517,8 +685,23 @@ export const mockPatients: Patient[] = [
     diseaseCategory: "肺鳞癌",
     diagnosis: "左上肺鳞癌（IIB期）",
     status: "Pathology",
+    currentStatus: "pathology_reported",
     riskLevel: "High",
     surgeryDate: "2026-05-17",
+    phone: "133****9901",
+    tasks: [],
+    notifications: [
+      notif("n1", "病理结果已回报", "术后病理结果已由医生团队收到，将为您制定个体化随访方案。", "pathology"),
+    ],
+    surgery: { scheduledDate: "2026-05-17", completed: true, backToWard: true },
+    pathology: {
+      pathologyType: "鳞癌",
+      stage: "IIB",
+      geneTest: true,
+      chemo: true,
+      immunotherapy: false,
+      reportedAt: "2026-05-22",
+    },
     timeline: buildTimeline(
       "pathology",
       {
@@ -565,4 +748,21 @@ export const mockPatients: Patient[] = [
 
 export function getPatientById(id: string): Patient | undefined {
   return mockPatients.find((p) => p.id === id);
+}
+
+/** 将旧版 localStorage 数据补齐为新 schema */
+export function migratePatient(patient: Patient): Patient {
+  const base = mockPatients.find((p) => p.id === patient.id);
+  return {
+  ...(base ?? mockPatients[0]),
+  ...patient,
+  currentStatus:
+    patient.currentStatus ?? base?.currentStatus ?? "exam_in_progress",
+  tasks: patient.tasks?.length ? patient.tasks : (base?.tasks ?? DEFAULT_PREOP_TASKS),
+  notifications: patient.notifications ?? base?.notifications ?? [],
+  surgery: { ...(base?.surgery ?? defaultSurgery()), ...patient.surgery },
+  pathology: { ...(base?.pathology ?? defaultPathology()), ...patient.pathology },
+  followupPlan: patient.followupPlan ?? base?.followupPlan,
+  flags: patient.flags ?? base?.flags,
+  };
 }
