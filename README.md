@@ -135,8 +135,24 @@ Workflow Engine 是本地 TypeScript 逻辑，负责模拟：
 
 **[ThorFlow 在线体验](https://thorflow.netlify.app)**
 
+### 方式二：用终端快速下载和启动
 
-### 方式二：在自己的电脑上运行（小白版）
+如果电脑已经安装了 Node.js 和 Git，打开终端，依次复制下面四行命令即可：
+
+```bash
+git clone https://github.com/dongmingzh/thorflow.git
+cd thorflow
+npm install
+npm run dev
+```
+
+看到 `Ready` 后，打开浏览器访问：
+
+**[http://localhost:3000/dashboard](http://localhost:3000/dashboard)**
+
+如果不知道自己是否安装过 Node.js 和 Git，或者执行时提示命令不存在，请直接使用下面的方式三。
+
+### 方式三：从零开始在自己的电脑上运行
 
 下面的操作不需要会编程。终端就像一个用文字控制电脑的窗口，按步骤复制命令即可。
 
@@ -205,17 +221,9 @@ npm run dev
 #### 常见问题
 
 - 提示 `command not found: npm`：Node.js 没有安装成功，重新安装 LTS 版本后再打开终端。
+- 提示 `command not found: git`：电脑没有安装 Git，直接使用方式三下载 ZIP 文件即可。
 - 提示找不到 `package.json`：终端没有进入正确文件夹，重新执行“`cd` + 拖入 `thorflow-main` 文件夹”。
 - 提示 3000 端口已被占用：ThorFlow 可能已经在运行，先直接打开 `http://localhost:3000/dashboard` 试试。
-
-### 方式三：使用 Git 下载（适合熟悉开发的用户）
-
-```bash
-git clone https://github.com/dongmingzh/thorflow.git
-cd thorflow
-npm install
-npm run dev
-```
 
 ## 常用命令
 
