@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "Thoracic surgery perioperative workflow platform with doctor console, patient mini-app simulation, and local workflow engine.",
   "private": true,
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DonoghZZZ/thorflow.git"
+    "url": "https://github.com/dongmingzh/thorflow.git"
   },
   "keywords": [
     "thoracic-surgery",

@@ -212,3 +212,7 @@ lib/
 ```text
 https://github.com/dongmingzh/thorflow
 ```
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
