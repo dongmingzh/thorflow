@@ -127,31 +127,95 @@ Workflow Engine 是本地 TypeScript 逻辑，负责模拟：
 
 现在它使用本地 mock 数据和浏览器存储，后续可以接 Supabase、医院数据库、PACS、EMR 或真实通知系统。
 
-## 如何本地运行
+## 如何体验 ThorFlow
 
-先将项目克隆到本地，并进入项目目录：
+### 方式一：直接在线体验（最推荐）
+
+如果你只想看看 ThorFlow 能做什么，不需要下载，也不需要安装软件。直接点击：
+
+**[ThorFlow 在线体验](https://thorflow.netlify.app)**
+
+医生、科室主任、合作伙伴或投资人使用这种方式即可。
+
+### 方式二：在自己的电脑上运行（小白版）
+
+下面的操作不需要会编程。终端就像一个用文字控制电脑的窗口，按步骤复制命令即可。
+
+#### 第 1 步：安装 Node.js
+
+打开 [Node.js 官方网站](https://nodejs.org/zh-cn)，下载并安装标有 **LTS** 的版本。整个过程和安装普通软件一样，按默认选项继续即可。
+
+安装完成后，关闭并重新打开终端：
+
+- Mac：按 `Command + 空格`，搜索“终端”并打开。
+- Windows：打开开始菜单，搜索“终端”或“PowerShell”并打开。
+
+在终端里输入下面的命令，然后按回车：
 
 ```bash
-git clone https://github.com/dongmingzh/thorflow.git
-cd thorflow
+node -v
 ```
 
-安装依赖：
+如果看到类似 `v22.0.0` 的版本号，就说明安装成功了。
+
+#### 第 2 步：下载 ThorFlow
+
+1. 打开 [ThorFlow GitHub 页面](https://github.com/dongmingzh/thorflow)。
+2. 点击页面上方绿色的 **Code** 按钮。
+3. 点击 **Download ZIP**。
+4. 下载完成后，双击 ZIP 文件解压，会得到一个名为 `thorflow-main` 的文件夹。
+
+#### 第 3 步：让终端进入项目文件夹
+
+在终端输入 `cd`，再按一次空格键，先不要按回车。
+
+然后用鼠标把刚才解压得到的 `thorflow-main` 文件夹直接拖进终端窗口，再按回车。这样不用自己输入一长串文件路径。
+
+#### 第 4 步：完成首次安装
+
+复制下面这条命令到终端，按回车，等待安装完成：
 
 ```bash
 npm install
 ```
 
-启动开发服务：
+第一次安装可能需要几分钟。只要终端没有出现红色报错，就耐心等待它完成。
+
+#### 第 5 步：启动 ThorFlow
+
+继续在同一个终端窗口输入：
 
 ```bash
 npm run dev
 ```
 
-打开浏览器访问：
+看到 `Ready` 后，打开浏览器，访问：
 
-```text
-http://localhost:3000/dashboard
+**[http://localhost:3000/dashboard](http://localhost:3000/dashboard)**
+
+使用期间请保持终端窗口开着。使用完成后，回到终端按 `Control + C` 即可停止。
+
+#### 以后再次打开
+
+以后不需要重复安装。只需打开终端，再次用“`cd` + 拖入文件夹”的方法进入 `thorflow-main`，然后运行：
+
+```bash
+npm run dev
+```
+
+#### 常见问题
+
+- 提示 `command not found: npm`：Node.js 没有安装成功，重新安装 LTS 版本后再打开终端。
+- 提示找不到 `package.json`：终端没有进入正确文件夹，重新执行“`cd` + 拖入 `thorflow-main` 文件夹”。
+- 提示 3000 端口已被占用：ThorFlow 可能已经在运行，先直接打开 `http://localhost:3000/dashboard` 试试。
+
+### 方式三：使用 Git 下载（适合熟悉开发的用户）
+
+```bash
+git clone https://github.com/dongmingzh/thorflow.git
+cd thorflow
+npm install
+npm run dev
 ```
 
 ## 常用命令
