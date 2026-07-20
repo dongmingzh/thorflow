@@ -1,7 +1,7 @@
 import { migratePatient, mockPatients, type Patient } from "./mock-data";
 
-const STORAGE_KEY = "thorflow-patients-v1";
-const STORAGE_VERSION = 1;
+const STORAGE_KEY = "thorflow-patients-v2";
+const STORAGE_VERSION = 2;
 
 export interface ThorFlowExport {
   version: number;

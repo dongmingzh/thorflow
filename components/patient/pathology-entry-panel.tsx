@@ -41,7 +41,7 @@ export function PathologyEntryPanel({
 
   return (
     <section
-      className={`rounded-3xl border border-border bg-card ${compact ? "p-5" : "p-6"}`}
+      className={`rounded-2xl border border-border bg-card shadow-sm ${compact ? "p-4" : "p-5"}`}
     >
       <div className="flex items-center gap-2">
         <Dna className="h-5 w-5 text-violet-600" />

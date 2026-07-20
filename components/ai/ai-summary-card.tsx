@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
 import type { PatientAIContent } from "@/lib/mock-data";
@@ -20,12 +19,10 @@ export function AISummaryCard({
   variant = "patient",
 }: AISummaryCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       className={cn(
-        "rounded-3xl border border-primary/20 bg-gradient-to-br from-primary-light/80 to-white p-6 shadow-sm",
-        variant === "workflow" && "sticky top-8"
+        "rounded-2xl border border-primary/20 bg-gradient-to-br from-primary-light/80 to-white p-5 shadow-sm",
+        variant === "workflow" && "sticky top-6"
       )}
     >
       <div className="mb-4 flex items-center gap-2">
@@ -51,7 +48,7 @@ export function AISummaryCard({
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 

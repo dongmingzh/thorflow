@@ -12,7 +12,7 @@ export function MiniFollowupView() {
     return <p className="p-8 text-center text-sm text-slate-500">未找到患者</p>;
   }
 
-  if (!plan) {
+  if (!plan || plan.templateName.includes("待病理")) {
     return (
       <div className="px-5 py-12 text-center">
         <Stethoscope className="mx-auto h-10 w-10 text-slate-300" />

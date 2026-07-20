@@ -18,6 +18,7 @@ export type PatientWorkflowStatus =
   | "surgery_scheduled"
   | "preop_preparing"
   | "in_surgery"
+  | "surgery_completed"
   | "in_icu"
   | "post_op_recovery"
   | "discharge_ready"
@@ -38,6 +39,7 @@ export const WORKFLOW_STATUS_LABELS: Record<PatientWorkflowStatus, string> = {
   surgery_scheduled: "已安排手术",
   preop_preparing: "术前准备中",
   in_surgery: "手术进行中",
+  surgery_completed: "手术已完成",
   in_icu: "术后监护中",
   post_op_recovery: "术后恢复中",
   discharge_ready: "待出院",
@@ -60,6 +62,7 @@ const STATUS_FLOW: PatientWorkflowStatus[] = [
   "surgery_scheduled",
   "preop_preparing",
   "in_surgery",
+  "surgery_completed",
   "in_icu",
   "post_op_recovery",
   "discharge_ready",
@@ -133,8 +136,18 @@ export interface PatientTaskItem {
   syncable?: boolean;
 }
 
+export const DEFAULT_RECOGNIZED_ORDER_ITEMS = [
+  "增强CT",
+  "肺功能",
+  "心电图",
+  "血常规",
+  "凝血功能",
+  "肝肾功能",
+  "麻醉评估",
+];
+
 export function generateTasksFromOrder(
-  recognizedItems: string[]
+  recognizedItems: string[] = DEFAULT_RECOGNIZED_ORDER_ITEMS
 ): PatientTaskItem[] {
   return recognizedItems.map((title, i) => ({
     id: `task-order-${i}`,
@@ -247,7 +260,11 @@ export function getPatientWorkflowPool(patient: Patient): WorkflowPoolKey {
     if (patient.surgeryDate === today) return "surgery_today";
     return "awaiting_surgery_schedule";
   }
-  if (s === "in_surgery" && patient.surgeryDate === today) return "surgery_today";
+  if (
+    (s === "in_surgery" || s === "surgery_completed") &&
+    patient.surgeryDate === today
+  )
+    return "surgery_today";
   if (s === "in_icu" || s === "post_op_recovery") return "post_op_icu";
   if (s === "discharged_waiting_pathology") return "awaiting_pathology";
   if (s === "discharge_ready") return "discharge_ready";
@@ -284,6 +301,7 @@ export function getPatientStageLabelForMini(
     surgery_scheduled: "已安排手术",
     preop_preparing: "已安排手术",
     in_surgery: "手术进行中",
+    surgery_completed: "手术已完成",
     in_icu: "术后恢复中",
     post_op_recovery: "术后恢复中",
     discharged_waiting_pathology: "待病理",

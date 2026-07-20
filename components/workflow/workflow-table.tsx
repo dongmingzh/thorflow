@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
@@ -32,17 +31,14 @@ export function WorkflowTable({ patients }: WorkflowTableProps) {
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {patients.map((patient, i) => {
+          {patients.map((patient) => {
             const timeline = getTimeline(patient.id);
             const current = getCurrentTimelineNode(timeline);
             const progress = getWorkflowProgress(timeline);
 
             return (
-              <motion.tr
+              <tr
                 key={patient.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: i * 0.03 }}
                 className="transition-colors hover:bg-primary-light/20"
               >
                 <td className="px-5 py-4">
@@ -101,7 +97,7 @@ export function WorkflowTable({ patients }: WorkflowTableProps) {
                     </Link>
                   </div>
                 </td>
-              </motion.tr>
+              </tr>
             );
           })}
         </tbody>

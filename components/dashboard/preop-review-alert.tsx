@@ -52,7 +52,7 @@ export function PreopReviewAlert({ patientId }: PreopReviewAlertProps) {
               <button
                 type="button"
                 onClick={() =>
-                  scheduleSurgery(p.id, p.surgeryDate ?? "2026-05-24")
+                  scheduleSurgery(p.id, p.surgeryDate ?? "2026-06-04")
                 }
                 className="inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary/90"
               >

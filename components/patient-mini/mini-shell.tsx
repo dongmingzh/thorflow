@@ -39,7 +39,7 @@ export function MiniShell({
         </span>
       </div>
 
-      <div className="mx-auto w-full max-w-[430px] overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-2xl shadow-slate-300/40">
+      <div className="mx-auto flex w-full max-w-[430px] flex-col overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-2xl shadow-slate-300/40">
         {(title || showBack) && (
           <header className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
             {showBack && (
@@ -55,7 +55,7 @@ export function MiniShell({
             )}
           </header>
         )}
-        <main className={`min-h-[70vh] ${hideTab ? "pb-6" : "pb-24"}`}>
+        <main className={`min-h-[70vh] ${hideTab ? "pb-6" : ""}`}>
           {children}
         </main>
         {!hideTab && <MiniTabBar patientId={patientId} />}

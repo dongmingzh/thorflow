@@ -102,13 +102,10 @@ const PatientWorkflowContext = createContext<PatientWorkflowContextValue | null>
 );
 
 export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
-  const [patients, setPatients] = useState<Patient[]>(mockPatients);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setPatients(initializePatients());
-    setHydrated(true);
-  }, []);
+  const [patients, setPatients] = useState<Patient[]>(() =>
+    initializePatients()
+  );
+  const hydrated = true;
 
   useEffect(() => {
     if (hydrated) savePatients(patients);
@@ -181,7 +178,8 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
 
       if (updates.status === "completed") {
         timeline = advanceTimelineNode(timeline, nodeId);
-        const { status: _, ...rest } = updates;
+        const rest = { ...updates };
+        delete rest.status;
         if (Object.keys(rest).length > 0) {
           timeline = updateTimelineNode(timeline, nodeId, rest);
         }
@@ -195,7 +193,8 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
                 ? "pending"
                 : n.status,
         }));
-        const { status: _, ...rest } = updates;
+        const rest = { ...updates };
+        delete rest.status;
         if (Object.keys(rest).length > 0) {
           timeline = updateTimelineNode(timeline, nodeId, rest);
         }
@@ -332,13 +331,12 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
         prev.map((p) => {
           if (p.id !== patientId) return p;
           const timeline = advanceTimelineNode(p.timeline, "mdt");
-          const advanced = advanceTimelineNode(timeline, "surgery");
           return {
             ...p,
             surgeryDate,
             currentStatus: "surgery_scheduled",
-            status: syncPatientStatus(advanced),
-            timeline: advanced,
+            status: "Surgery",
+            timeline,
             surgery: {
               ...p.surgery,
               scheduledDate: surgeryDate,
@@ -373,14 +371,14 @@ export function PatientWorkflowProvider({ children }: { children: ReactNode }) {
           workflowStage: "Surgery",
         },
         completed: {
-          status: "in_icu",
-          template: "surgery_completed_icu",
-          surgery: { inOR: false, completed: true, inICU: true },
+          status: "surgery_completed",
+          template: "surgery_completed",
+          surgery: { inOR: false, completed: true },
           workflowStage: "Surgery",
         },
         icu: {
           status: "in_icu",
-          template: "surgery_completed_icu",
+          template: "transferred_icu",
           surgery: { inICU: true },
         },
         ward: {

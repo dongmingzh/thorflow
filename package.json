@@ -1,10 +1,23 @@
 {
   "name": "thorflow",
   "version": "0.1.0",
+  "description": "High-fidelity thoracic surgery perioperative workflow demo with doctor console, patient mini-app simulation, and local workflow engine.",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DonoghZZZ/thorflow.git"
+  },
+  "keywords": [
+    "thoracic-surgery",
+    "perioperative",
+    "workflow",
+    "healthcare-saas",
+    "nextjs",
+    "demo"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },

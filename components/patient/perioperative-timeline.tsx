@@ -25,12 +25,11 @@ export function PerioperativeTimeline({ patientId }: PerioperativeTimelineProps)
 
   return (
     <div>
-      <div className="relative ml-4 space-y-6 border-l-2 border-border pl-10">
-        {timeline.map((node, index) => (
+      <div className="relative ml-4 space-y-3 border-l-2 border-border pl-9">
+        {timeline.map((node) => (
           <TimelineNodeCard
             key={node.id}
             node={node}
-            index={index}
             onAdvance={() => advance(node.id)}
             onUpdate={(updates) => updateNode(node.id, updates)}
             onDelete={() => deleteNode(node.id)}

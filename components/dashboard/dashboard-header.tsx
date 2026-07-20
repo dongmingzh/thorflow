@@ -23,7 +23,7 @@ export function DashboardHeader({
   onSearchChange,
 }: DashboardHeaderProps) {
   return (
-    <header className="mb-10 flex flex-wrap items-center justify-between gap-4">
+    <header className="mb-5 flex flex-wrap items-center justify-between gap-4">
       <div>
         {backHref && (
           <Link
@@ -33,10 +33,10 @@ export function DashboardHeader({
             ← 返回总览
           </Link>
         )}
-        <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
           {title}
         </h1>
-        <p className="mt-2 text-muted">{subtitle}</p>
+        <p className="mt-1 text-sm text-muted">{subtitle}</p>
       </div>
       <div className="flex flex-wrap items-center gap-3">
         {onSearchChange && (
@@ -47,14 +47,14 @@ export function DashboardHeader({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="搜索患者、ID、诊断..."
-              className="w-64 rounded-full border border-border bg-card py-2.5 pl-11 pr-4 text-sm outline-none transition focus:ring-4 focus:ring-primary/20"
+              className="w-64 rounded-full border border-border bg-card py-2 pl-11 pr-4 text-sm outline-none transition focus:ring-4 focus:ring-primary/20"
             />
           </div>
         )}
         <DataActions />
         <Link
           href="/patient-mini"
-          className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-medium text-teal-700 transition hover:bg-teal-100"
+          className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-medium text-teal-700 transition hover:bg-teal-100"
         >
           <Smartphone className="h-4 w-4" />
           患者小程序
@@ -63,7 +63,7 @@ export function DashboardHeader({
           <button
             type="button"
             onClick={onAddPatient}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary/90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             新增患者
@@ -71,11 +71,11 @@ export function DashboardHeader({
         )}
         <button
           type="button"
-          className="rounded-full border border-border bg-card p-3 transition hover:bg-primary-light"
+          className="rounded-full border border-border bg-card p-2.5 transition hover:bg-primary-light"
         >
           <Bell className="h-5 w-5 text-muted" />
         </button>
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-sm font-semibold text-primary">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-light text-sm font-semibold text-primary">
           MD
         </div>
       </div>

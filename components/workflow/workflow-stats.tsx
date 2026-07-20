@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Clock, Flame, ListChecks, Users } from "lucide-react";
 
 import type { WorkflowStats } from "@/lib/workflow";
@@ -25,20 +24,16 @@ export function WorkflowStatsGrid({ stats }: WorkflowStatsProps) {
   };
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      {items.map((item, i) => {
+    <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {items.map((item) => {
         const Icon = item.icon;
         const val = values[item.key];
         return (
-          <motion.div
+          <div
             key={item.key}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
-            whileHover={{ y: -3 }}
-            className="rounded-3xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-2xl border border-border bg-card p-4 shadow-sm"
           >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-light">
+            <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-primary-light">
               <Icon className="h-5 w-5 text-primary" />
             </div>
             <p className="text-2xl font-semibold text-foreground">
@@ -47,7 +42,7 @@ export function WorkflowStatsGrid({ stats }: WorkflowStatsProps) {
                 : val}
             </p>
             <p className="mt-1 text-sm text-muted">{item.label}</p>
-          </motion.div>
+          </div>
         );
       })}
     </div>

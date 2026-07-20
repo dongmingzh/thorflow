@@ -42,6 +42,16 @@ const TEMPLATES: Record<string, NotificationTemplate> = {
     body: "手术已完成，您已转入监护室观察，医护团队将密切监测恢复情况。",
     category: "surgery",
   },
+  surgery_completed: {
+    title: "手术已完成",
+    body: "手术已顺利完成，医护团队正在进行术后复苏与病房/监护室交接。",
+    category: "surgery",
+  },
+  transferred_icu: {
+    title: "已转入监护室",
+    body: "您已转入ICU/监护室观察，医护团队将持续监测生命体征和恢复情况。",
+    category: "surgery",
+  },
   back_to_ward: {
     title: "已转回病房",
     body: "您已从监护室转回普通病房，请按护士指导进行术后康复活动。",

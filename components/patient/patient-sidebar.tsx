@@ -17,7 +17,7 @@ export function PatientSidebar({ patient }: PatientSidebarProps) {
   const router = useRouter();
 
   return (
-    <aside className="w-full shrink-0 border-b border-border bg-card p-6 lg:w-[300px] lg:border-b-0 lg:border-r xl:w-[320px]">
+    <aside className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <button
         type="button"
         onClick={() => router.push("/dashboard")}
@@ -26,7 +26,7 @@ export function PatientSidebar({ patient }: PatientSidebarProps) {
         <ArrowLeft className="h-4 w-4" />
         返回工作台
       </button>
-      <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-primary-light text-3xl font-bold text-primary">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-light text-2xl font-bold text-primary">
         {patient.name[0]}
       </div>
       <h1 className="text-2xl font-bold text-foreground">{patient.name}</h1>
@@ -40,7 +40,7 @@ export function PatientSidebar({ patient }: PatientSidebarProps) {
           {RISK_LABELS[patient.riskLevel]}风险
         </Badge>
       </div>
-      <div className="mt-6 space-y-3">
+      <div className="mt-5 space-y-2">
         <InfoBlock label="主要诊断" value={patient.diagnosis} />
         {patient.clinicalStage && (
           <InfoBlock label="临床分期" value={patient.clinicalStage} />
@@ -68,7 +68,7 @@ export function PatientSidebar({ patient }: PatientSidebarProps) {
 
 function InfoBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-border bg-slate-50/80 p-4">
+    <div className="rounded-xl border border-border bg-slate-50/80 p-3">
       <p className="mb-1 text-xs text-muted">{label}</p>
       <p className="text-sm font-medium text-foreground">{value}</p>
     </div>

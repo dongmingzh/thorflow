@@ -6,17 +6,11 @@ import { Camera, Check, Loader2, Upload } from "lucide-react";
 
 import { usePatientWorkflow } from "@/components/providers/patient-workflow-provider";
 import { useMiniPatient } from "@/components/patient-mini/use-mini-patient";
+import {
+  DEFAULT_RECOGNIZED_ORDER_ITEMS,
+  generateTasksFromOrder,
+} from "@/lib/workflow-engine";
 import { cn } from "@/lib/utils";
-
-const RECOGNIZED_ITEMS = [
-  "增强CT",
-  "肺功能",
-  "心电图",
-  "血常规",
-  "凝血功能",
-  "肝肾功能",
-  "麻醉评估",
-];
 
 export function UploadExamDemo() {
   const { patient, patientId } = useMiniPatient();
@@ -30,8 +24,8 @@ export function UploadExamDemo() {
   if (!patient) return null;
 
   const allChecked =
-    RECOGNIZED_ITEMS.length > 0 &&
-    RECOGNIZED_ITEMS.every((item) => checked[item]);
+    DEFAULT_RECOGNIZED_ORDER_ITEMS.length > 0 &&
+    DEFAULT_RECOGNIZED_ORDER_ITEMS.every((item) => checked[item]);
 
   const handleUpload = () => {
     setPhase("uploaded");
@@ -41,7 +35,12 @@ export function UploadExamDemo() {
 
   const handleSync = () => {
     if (!allChecked) return;
-    const tasks = patient.tasks.map((t) => ({ ...t, completed: true }));
+    const tasks = generateTasksFromOrder().map((t) => ({
+      id: t.id,
+      title: t.title,
+      subtitle: t.subtitle,
+      completed: true,
+    }));
     updatePatientTasks(patientId, tasks);
     updatePatient(patientId, {
       currentStatus: "doctor_review",
@@ -107,7 +106,7 @@ export function UploadExamDemo() {
               已识别到以下检查项目：
             </p>
             <ul className="mt-3 space-y-2">
-              {RECOGNIZED_ITEMS.map((item) => (
+              {DEFAULT_RECOGNIZED_ORDER_ITEMS.map((item) => (
                 <li key={item}>
                   <button
                     type="button"

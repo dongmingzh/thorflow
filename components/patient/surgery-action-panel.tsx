@@ -40,7 +40,7 @@ export function SurgeryActionPanel({ patient }: SurgeryActionPanelProps) {
   const { markSurgeryMilestone } = usePatientWorkflow();
 
   return (
-    <section className="mt-8 rounded-3xl border border-border bg-card p-6">
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-foreground">
         手术与 ICU 关键节点
       </h3>

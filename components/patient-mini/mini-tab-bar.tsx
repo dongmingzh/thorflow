@@ -22,7 +22,7 @@ export function MiniTabBar({ patientId }: MiniTabBarProps) {
   const q = patientId ? `?patient=${patientId}` : "";
 
   return (
-    <nav className="fixed bottom-0 left-1/2 z-50 w-full max-w-[430px] -translate-x-1/2 border-t border-slate-100 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+    <nav className="sticky bottom-0 z-30 w-full border-t border-slate-100 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
       <div className="flex items-stretch justify-around py-2">
         {tabs.map((tab) => {
           const active = tab.exact

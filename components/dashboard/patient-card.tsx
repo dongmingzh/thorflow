@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -11,7 +10,6 @@ import { getWorkflowProgress } from "@/lib/workflow";
 
 interface PatientCardProps {
   patient: Patient;
-  index?: number;
 }
 
 const statusVariant: Record<
@@ -24,18 +22,14 @@ const statusVariant: Record<
   "Follow-up": "success",
 };
 
-export function PatientCard({ patient, index = 0 }: PatientCardProps) {
+export function PatientCard({ patient }: PatientCardProps) {
   const { getTimeline } = usePatientWorkflow();
   const timeline = getTimeline(patient.id);
   const progress = getWorkflowProgress(timeline);
 
   return (
     <Link href={`/patient/${patient.id}`}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.05 }}
-        whileHover={{ y: -6 }}
+      <div
         className="group cursor-pointer rounded-3xl border border-border bg-card p-6 shadow-sm transition-all hover:shadow-xl"
       >
         <div className="mb-4 flex items-start justify-between">
@@ -64,10 +58,9 @@ export function PatientCard({ patient, index = 0 }: PatientCardProps) {
             <span>{progress}%</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
+            <div
               className="h-full rounded-full bg-primary"
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>
@@ -81,7 +74,7 @@ export function PatientCard({ patient, index = 0 }: PatientCardProps) {
             <ChevronRight className="h-4 w-4" />
           </span>
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

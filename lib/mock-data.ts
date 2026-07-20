@@ -195,6 +195,27 @@ function defaultPathology(): PathologyInfo {
   return {};
 }
 
+export function createPendingFollowupPlan(): FollowupPlan {
+  return {
+    templateName: "待病理回报后生成",
+    nextVisitDate: "病理回报后确认",
+    nextExam: "胸部CT / 肿瘤标志物按分期确认",
+    needsChemo: false,
+    needsGeneTest: false,
+    needsTargeted: false,
+    needsImmunotherapy: false,
+    doctorNote: "病理类型与分期确认后，AI 将生成个体化随访时间表。",
+    items: [
+      {
+        id: "fu-pending",
+        title: "等待医生录入病理并生成随访计划",
+        dueDate: "待确认",
+        type: "reminder",
+      },
+    ],
+  };
+}
+
 function notif(
   id: string,
   title: string,
@@ -214,15 +235,16 @@ function notif(
 export const mockPatients: Patient[] = [
   {
     id: "PT-1001",
-    name: "张建国",
+    name: "患者A",
     age: 58,
     gender: "M",
     diseaseCategory: "肺结节",
     diagnosis: "右上肺混合磨玻璃结节（IA期腺癌倾向）",
+    clinicalStage: "cT1aN0M0 · IA1",
     status: "Pre-op",
     currentStatus: "exam_in_progress",
     riskLevel: "Medium",
-    surgeryDate: "2026-05-22",
+    surgeryDate: "2026-06-03",
     phone: "138****5621",
     inpatientNo: "20260518001",
     tasks: DEFAULT_PREOP_TASKS.map((t, i) => ({
@@ -232,8 +254,9 @@ export const mockPatients: Patient[] = [
     notifications: [
       notif("n1", "术前检查提醒", "请按医嘱完成增强CT与肺功能检查，完成后在小程序上传检查单。", "exam"),
     ],
-    surgery: defaultSurgery("2026-05-22"),
+    surgery: defaultSurgery("2026-06-03"),
     pathology: defaultPathology(),
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "anesthesia",
       {
@@ -284,22 +307,31 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1002",
-    name: "林晓慧",
+    name: "患者B",
     age: 42,
     gender: "F",
     diseaseCategory: "肺腺癌",
     diagnosis: "左下肺腺癌（IA期）",
+    clinicalStage: "cT1bN0M0 · IA2",
     status: "Surgery",
     currentStatus: "in_surgery",
     riskLevel: "Low",
-    surgeryDate: "2026-05-19",
+    surgeryDate: "2026-06-01",
     phone: "139****8820",
     tasks: [],
     notifications: [
       notif("n1", "患者已进入手术室", "您已进入手术室，家属请在等候区耐心等待。", "surgery"),
     ],
-    surgery: { scheduledDate: "2026-05-19", inOR: true, completed: false, inICU: false, backToWard: false },
+    surgery: {
+      scheduledDate: "2026-06-01",
+      operatingRoom: "OR-3",
+      inOR: true,
+      completed: false,
+      inICU: false,
+      backToWard: false,
+    },
     pathology: defaultPathology(),
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "surgery",
       {
@@ -309,7 +341,7 @@ export const mockPatients: Patient[] = [
         pulmonary: "05-14",
         anesthesia: "05-16",
         mdt: "05-17",
-        surgery: "05-19",
+        surgery: "06-01",
       },
       { surgery: "胸腔镜左肺下叶切除术进行中" }
     ),
@@ -349,11 +381,12 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1003",
-    name: "陈国强",
+    name: "患者C",
     age: 65,
     gender: "M",
     diseaseCategory: "肺鳞癌",
     diagnosis: "右上肺鳞癌（IIIA期）",
+    clinicalStage: "cT3N2M0 · IIIA",
     status: "Pathology",
     currentStatus: "discharged_waiting_pathology",
     riskLevel: "High",
@@ -365,6 +398,7 @@ export const mockPatients: Patient[] = [
     ],
     surgery: { scheduledDate: "2026-05-18", inOR: false, completed: true, inICU: false, backToWard: true },
     pathology: { stage: "IIIA", pathologyType: "鳞癌", geneTest: true, chemo: true },
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "pathology",
       {
@@ -416,15 +450,16 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1004",
-    name: "王宇",
+    name: "患者D",
     age: 22,
     gender: "M",
     diseaseCategory: "微浸润腺癌",
     diagnosis: "左下肺混合磨玻璃结节（MIA倾向）",
+    clinicalStage: "cT1miN0M0 · IA1",
     status: "Pre-op",
     currentStatus: "doctor_review",
     riskLevel: "Low",
-    surgeryDate: "2026-05-24",
+    surgeryDate: "2026-06-04",
     phone: "186****1024",
     inpatientNo: "20260522004",
     flags: { readyForSurgeryReview: true },
@@ -433,8 +468,9 @@ export const mockPatients: Patient[] = [
       notif("n1", "检查已同步", "您完成的术前检查项目已同步至医生端，请等待医生审核并安排手术。", "exam"),
       notif("n2", "术前准备提醒", "请术前 8 小时禁食禁饮，按医嘱停用抗凝药物。", "surgery"),
     ],
-    surgery: defaultSurgery("2026-05-24"),
+    surgery: defaultSurgery("2026-06-04"),
     pathology: defaultPathology(),
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "mdt",
       {
@@ -475,11 +511,12 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1005",
-    name: "李素珍",
+    name: "患者E",
     age: 71,
     gender: "F",
     diseaseCategory: "肺腺癌",
     diagnosis: "右中叶肺腺癌（IA期）",
+    clinicalStage: "pT1bN0M0 · IA2",
     status: "Follow-up",
     currentStatus: "in_followup",
     riskLevel: "Medium",
@@ -493,7 +530,7 @@ export const mockPatients: Patient[] = [
     pathology: { pathologyType: "浸润性腺癌", stage: "IA", geneTest: false, chemo: false },
     followupPlan: {
       templateName: "IA期标准随访",
-      nextVisitDate: "2026-05-27",
+      nextVisitDate: "2026-06-01",
       nextExam: "胸部CT",
       needsChemo: false,
       needsGeneTest: false,
@@ -501,8 +538,8 @@ export const mockPatients: Patient[] = [
       needsImmunotherapy: false,
       doctorNote: "IA期术后规律影像随访，关注肺功能与营养状态。",
       items: [
-        { id: "fu-1", title: "今日门诊随访", dueDate: "2026-05-27", type: "visit" },
-        { id: "fu-2", title: "复查胸部CT", dueDate: "2026-05-27", type: "imaging" },
+        { id: "fu-1", title: "今日门诊随访", dueDate: "2026-06-01", type: "visit" },
+        { id: "fu-2", title: "复查胸部CT", dueDate: "2026-06-01", type: "imaging" },
       ],
     },
     timeline: buildTimeline(
@@ -551,23 +588,25 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1006",
-    name: "赵铁柱",
+    name: "患者F",
     age: 55,
     gender: "M",
     diseaseCategory: "围术期肺癌",
     diagnosis: "右上肺中央型肺癌（IIIA期，围术期管理）",
+    clinicalStage: "ycT3N2M0 · IIIA",
     status: "Pre-op",
     currentStatus: "exam_in_progress",
     riskLevel: "High",
-    surgeryDate: "2026-05-27",
+    surgeryDate: "2026-06-06",
     flags: { overdue: true },
     phone: "135****7788",
     tasks: DEFAULT_PREOP_TASKS.map((t, i) => ({ ...t, completed: i < 1 })),
     notifications: [
       notif("n1", "检查超时提醒", "肺功能检查已超期 2 天，请尽快完成或联系护士站。", "exam"),
     ],
-    surgery: defaultSurgery("2026-05-27"),
+    surgery: defaultSurgery("2026-06-06"),
     pathology: defaultPathology(),
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "anesthesia",
       {
@@ -625,22 +664,24 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1007",
-    name: "孙丽",
+    name: "患者G",
     age: 48,
     gender: "F",
     diseaseCategory: "肺结节",
     diagnosis: "双肺多发磨玻璃结节（右肺主病灶）",
+    clinicalStage: "cT1aN0M0 · 多原发待评估",
     status: "Pre-op",
     currentStatus: "pending_checkin",
     riskLevel: "High",
-    surgeryDate: "2026-05-28",
+    surgeryDate: "2026-06-07",
     phone: "158****4421",
     tasks: DEFAULT_PREOP_TASKS,
     notifications: [],
-    surgery: defaultSurgery("2026-05-28"),
+    surgery: defaultSurgery("2026-06-07"),
     pathology: defaultPathology(),
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
-      "mdt",
+      "outpatient",
       {
         outpatient: "05-06",
         ct: "05-12",
@@ -679,11 +720,12 @@ export const mockPatients: Patient[] = [
   },
   {
     id: "PT-1008",
-    name: "周文",
+    name: "患者H",
     age: 60,
     gender: "M",
     diseaseCategory: "肺鳞癌",
     diagnosis: "左上肺鳞癌（IIB期）",
+    clinicalStage: "pT2bN1M0 · IIB",
     status: "Pathology",
     currentStatus: "pathology_reported",
     riskLevel: "High",
@@ -702,6 +744,7 @@ export const mockPatients: Patient[] = [
       immunotherapy: false,
       reportedAt: "2026-05-22",
     },
+    followupPlan: createPendingFollowupPlan(),
     timeline: buildTimeline(
       "pathology",
       {
@@ -762,7 +805,7 @@ export function migratePatient(patient: Patient): Patient {
   notifications: patient.notifications ?? base?.notifications ?? [],
   surgery: { ...(base?.surgery ?? defaultSurgery()), ...patient.surgery },
   pathology: { ...(base?.pathology ?? defaultPathology()), ...patient.pathology },
-  followupPlan: patient.followupPlan ?? base?.followupPlan,
+  followupPlan: patient.followupPlan ?? base?.followupPlan ?? createPendingFollowupPlan(),
   flags: patient.flags ?? base?.flags,
   };
 }

@@ -35,7 +35,7 @@ export function TodayTodos({ patient }: TodayTodosProps) {
   const current = getCurrentTimelineNode(timeline);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
       <div className="rounded-2xl border border-primary/20 bg-primary-light/50 p-4">
         <p className="text-xs font-medium uppercase tracking-wide text-primary">
           当前流程节点
@@ -47,7 +47,7 @@ export function TodayTodos({ patient }: TodayTodosProps) {
           <p className="mt-1 text-sm text-muted">{current.description}</p>
         )}
       </div>
-      <h3 className="text-lg font-semibold text-foreground">今日待办</h3>
+      <h3 className="text-base font-semibold text-foreground">今日待办</h3>
       {patient.todos.map((todo, i) => {
         const Icon = iconMap[todo.icon];
         return (

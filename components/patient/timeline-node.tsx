@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   CheckCircle2,
   Circle,
@@ -13,7 +12,6 @@ import type { TimelineNode } from "@/lib/mock-data";
 
 interface TimelineNodeCardProps {
   node: TimelineNode;
-  index: number;
   onAdvance: () => void;
   onUpdate: (updates: Partial<TimelineNode>) => void;
   onDelete: () => void;
@@ -21,7 +19,6 @@ interface TimelineNodeCardProps {
 
 export function TimelineNodeCard({
   node,
-  index,
   onAdvance,
   onUpdate,
   onDelete,
@@ -36,14 +33,9 @@ export function TimelineNodeCard({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      className="relative"
-    >
+    <div className="relative">
       <div
-        className={`absolute -left-[52px] flex h-8 w-8 items-center justify-center rounded-full border-2 bg-card ${
+        className={`absolute -left-[49px] flex h-8 w-8 items-center justify-center rounded-full border-2 bg-card ${
           node.status === "completed"
             ? "border-emerald-500 text-emerald-500"
             : node.status === "current"
@@ -59,10 +51,10 @@ export function TimelineNodeCard({
       </div>
 
       <div
-        className={`rounded-3xl border p-5 transition-all ${
+        className={`rounded-2xl border p-4 transition-all ${
           node.status === "current"
-            ? "border-primary/30 bg-card shadow-lg"
-            : "border-border bg-card/80"
+          ? "border-primary/30 bg-primary-light/30 shadow-sm"
+          : "border-border bg-card/80"
         }`}
       >
         {editing ? (
@@ -157,6 +149,6 @@ export function TimelineNodeCard({
           </>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

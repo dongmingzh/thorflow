@@ -23,7 +23,7 @@ export function AIAnalysisPanel({ content }: AIAnalysisPanelProps) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary-light/80 to-white p-6 shadow-sm"
+      className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary-light/80 to-white p-5 shadow-sm"
     >
       <div className="mb-5 flex items-center gap-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white">
@@ -31,7 +31,7 @@ export function AIAnalysisPanel({ content }: AIAnalysisPanelProps) {
         </div>
         <h4 className="font-semibold text-foreground">AI 围术期分析</h4>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {sections.map((s, i) => {
           const Icon = s.icon;
           return (
@@ -40,7 +40,7 @@ export function AIAnalysisPanel({ content }: AIAnalysisPanelProps) {
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={`rounded-2xl p-4 ${
+              className={`rounded-xl p-3 ${
                 s.alert
                   ? "border border-rose-200 bg-rose-50/50"
                   : "bg-white/60"
