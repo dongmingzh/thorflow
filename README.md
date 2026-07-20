@@ -135,7 +135,6 @@ Workflow Engine 是本地 TypeScript 逻辑，负责模拟：
 
 **[ThorFlow 在线体验](https://thorflow.netlify.app)**
 
-医生、科室主任、合作伙伴或投资人使用这种方式即可。
 
 ### 方式二：在自己的电脑上运行（小白版）
 
