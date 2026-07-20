@@ -2,7 +2,7 @@
 
 import { Check } from "lucide-react";
 
-import { UploadExamDemo } from "@/components/patient-mini/upload-exam-demo";
+import { UploadExamRecognition } from "@/components/patient-mini/upload-exam-recognition";
 import { useMiniPatient } from "@/components/patient-mini/use-mini-patient";
 import { cn } from "@/lib/utils";
 
@@ -54,7 +54,7 @@ export function MiniTasksView() {
       </ul>
 
       <div className="mt-6">
-        <UploadExamDemo />
+        <UploadExamRecognition />
       </div>
     </div>
   );

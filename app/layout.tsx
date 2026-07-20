@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ThorFlow · 胸外科围术期医患流程协同平台",
   description:
-    "医生端 Workflow OS + 患者小程序 + 围术期 workflow engine 演示",
+    "帮助外科团队管理患者围术期全流程，医生与患者双向同步提醒，提高日常工作效率",
 };
 
 export default function RootLayout({

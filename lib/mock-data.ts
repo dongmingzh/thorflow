@@ -171,8 +171,8 @@ function buildTimeline(
 const CT_PREVIEW =
   "https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1600&auto=format&fit=crop";
 
-/** 患者端小程序 Demo 默认患者 */
-export const DEMO_MINI_PATIENT_ID = "PT-1004";
+/** 患者端小程序默认患者 */
+export const DEFAULT_MINI_PATIENT_ID = "PT-1004";
 
 export const DEFAULT_PREOP_TASKS: PatientWorkflowTask[] = [
   { id: "pt-upload", title: "上传术前检查单", completed: false },

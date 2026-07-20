@@ -21,7 +21,7 @@ export function MiniNotificationsView() {
     patient && patient.notifications.length > 0
       ? patient.notifications
       : DEMO_NOTIFICATIONS.map((n, i) => ({
-          id: `demo-${i}`,
+          id: `sample-${i}`,
           title: n.title,
           body: n.body,
           createdAt: new Date().toISOString(),

@@ -42,7 +42,7 @@ export function CTPreviewModal({ open, onClose, study }: CTPreviewModalProps) {
           />
         </div>
         <div className="border-t border-white/10 px-6 py-3 text-xs text-slate-400">
-          ThorFlow Imaging · AI 病灶标注预览（演示数据）
+          ThorFlow Imaging · AI 病灶标注预览（示例数据）
         </div>
       </div>
     </Modal>

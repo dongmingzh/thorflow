@@ -39,7 +39,7 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">
-              Demo 闭环演示
+              产品闭环展示
             </p>
             <h2 className="mt-1 text-lg font-semibold text-foreground">
               医生端 Web + 患者小程序 + Workflow Engine

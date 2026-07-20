@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Smartphone } from "lucide-react";
 
 import { MiniTabBar } from "@/components/patient-mini/mini-tab-bar";
-import { DEMO_MINI_PATIENT_ID } from "@/lib/mock-data";
+import { DEFAULT_MINI_PATIENT_ID } from "@/lib/mock-data";
 
 interface MiniShellProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ export function MiniShell({
   showBack,
   backHref = "/patient-mini",
   hideTab,
-  patientId = DEMO_MINI_PATIENT_ID,
+  patientId = DEFAULT_MINI_PATIENT_ID,
 }: MiniShellProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 py-6 md:py-10">

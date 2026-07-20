@@ -6,7 +6,7 @@ import {
   type PathologyInput,
 } from "./followup-templates";
 
-/** 患者精细状态（对接后端 workflow engine 前的 Demo 契约） */
+/** 患者精细状态（对接后端 workflow engine 前的本地契约） */
 export type PatientWorkflowStatus =
   | "pending_checkin"
   | "checked_in"
@@ -50,7 +50,7 @@ export const WORKFLOW_STATUS_LABELS: Record<PatientWorkflowStatus, string> = {
   long_term_management: "长期管理",
 };
 
-/** 状态推进顺序（Demo 简化版） */
+/** 状态推进顺序（当前产品原型的简化流程） */
 const STATUS_FLOW: PatientWorkflowStatus[] = [
   "pending_checkin",
   "checked_in",

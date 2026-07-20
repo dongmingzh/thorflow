@@ -12,7 +12,7 @@ import {
 } from "@/lib/workflow-engine";
 import { cn } from "@/lib/utils";
 
-export function UploadExamDemo() {
+export function UploadExamRecognition() {
   const { patient, patientId } = useMiniPatient();
   const { updatePatientTasks, pushNotificationFromTemplate, updatePatient } =
     usePatientWorkflow();

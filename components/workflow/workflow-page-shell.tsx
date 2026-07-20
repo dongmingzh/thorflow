@@ -147,7 +147,7 @@ function WorkflowCommandStrip({
               patients.map((p) => Math.max(p.tasks.length, 1))
             ) * 100
           )}%`}
-          description="用于演示患者端上传检查单后医生审核"
+          description="患者端上传检查单后自动进入医生审核队列"
         />
         <SignalLink
           href={ready ? `/patient/${ready.id}` : "/patient-mini/tasks"}
@@ -207,7 +207,7 @@ function WorkflowCommandStrip({
         <SignalLink
           href={patients[0] ? `/patient/${patients[0].id}` : "/dashboard"}
           icon={CalendarDays}
-          title="录入病理 Demo"
+          title="录入病理"
           description="选择病理类型、分期、化疗/免疫/靶向策略"
         />
       </section>
