@@ -129,10 +129,11 @@ Workflow Engine 是本地 TypeScript 逻辑，负责模拟：
 
 ## 如何本地运行
 
-先进入项目目录：
+先将项目克隆到本地，并进入项目目录：
 
 ```bash
-cd "/Users/zhangdongming/Library/CloudStorage/OneDrive-个人/学习/vibecoding/thorflow"
+git clone https://github.com/dongmingzh/thorflow.git
+cd thorflow
 ```
 
 安装依赖：
