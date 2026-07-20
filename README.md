@@ -2,6 +2,12 @@
 
 胸外科围术期医患流程协同平台
 
+[![CI](https://github.com/dongmingzh/thorflow/actions/workflows/ci.yml/badge.svg)](https://github.com/dongmingzh/thorflow/actions/workflows/ci.yml)
+[![Live Preview](https://img.shields.io/badge/Live_Preview-Netlify-00C7B7?logo=netlify&logoColor=white)](https://thorflow.netlify.app)
+[![MIT License](https://img.shields.io/badge/License-MIT-2F855A.svg)](LICENSE)
+
+**[Live Preview / 在线体验](https://thorflow.netlify.app)**
+
 ![ThorFlow 社交预览图](public/readme/social-preview.jpg)
 
 ThorFlow 想解决一个很具体的问题：胸外科患者从门诊发现、术前检查、安排手术、进入手术室、术后监护、病理结果到随访，过程很长，信息分散在医生、护士、患者、家属、检查单、微信群和医院系统之间。只要一个节点没人提醒，就容易拖慢流程，患者也会焦虑。
