@@ -1,172 +1,212 @@
 # ThorFlow
 
-ThorFlow is a high-fidelity demo of a thoracic surgery perioperative workflow platform. It shows how a doctor-facing workflow console, a patient-facing mini-app experience, and a lightweight workflow engine can coordinate the journey from hospital check-in to pre-op exams, surgery, pathology, discharge, and follow-up.
+胸外科围术期医患流程协同平台 Demo
 
-> Demo only: ThorFlow does not connect to real hospital systems, WeChat, PACS, EMR, or production AI services. All patient records are anonymized mock data.
+ThorFlow 想解决一个很具体的问题：胸外科患者从门诊发现、术前检查、安排手术、进入手术室、术后监护、病理结果到随访，过程很长，信息分散在医生、护士、患者、家属、检查单、微信群和医院系统之间。只要一个节点没人提醒，就容易拖慢流程，患者也会焦虑。
 
-## Product Concept
+这个项目用一个高保真 Demo 演示：如果把这些环节整理成一条清晰的数字化流程，医生端可以像调度台一样看全局，患者端可以像小程序一样知道自己下一步该做什么，中间由 Workflow Engine 自动生成任务、通知和随访计划。
 
-ThorFlow is designed as a clinical workflow OS for thoracic surgery teams:
+> 当前项目是演示版，不连接真实医院系统、不连接真实微信小程序、不接入真实 AI 服务。所有患者信息都是匿名 mock 数据，例如“患者A、患者B”。
 
-- **Doctor Console**: web/desktop dashboard for workflow pools, patient queues, surgery status, pathology entry, and follow-up planning.
-- **Patient Mini-App Simulation**: mobile-sized interface for check-in, exam upload, task completion, notifications, and follow-up reminders.
-- **Workflow Engine**: local TypeScript logic that models status transitions, timeline events, patient notifications, exam task generation, and follow-up plan generation.
+## 一句话介绍
 
-## Demo Workflow
+ThorFlow 是给胸外科团队用的“围术期流程控制台”：  
+医生看得见每个患者卡在哪一步，患者收得到下一步提醒，系统自动把检查、手术、病理、随访串成闭环。
 
-The demo is built around one end-to-end perioperative loop:
+## 界面预览
 
-1. Patient scans code and checks in.
-2. Patient completes basic information.
-3. Patient uploads pre-op exam order.
-4. AI-like recognition extracts required exams.
-5. Patient marks exam items as completed.
-6. Doctor receives pre-op completion alert.
-7. Doctor schedules surgery.
-8. Patient receives surgery notification.
-9. Doctor marks surgery milestones: entering OR, surgery completed, ICU/monitoring, back to ward.
-10. Patient receives status notifications.
-11. Doctor records pathology and staging.
-12. Workflow engine generates follow-up plan.
-13. Patient sees the follow-up timeline.
+### 医生端：胸外科流程控制台
 
-## Key Features
+医生打开 `/dashboard` 后，不是看到一张普通患者表，而是看到各个流程池：待报道、待检查、待审核、待安排手术、今日手术、ICU、待病理、待随访、超时异常等。
 
-### Doctor-Side Workflow Console
+![医生端流程控制台](public/readme/dashboard.png)
 
-- Workflow pools for check-in, pre-op exams, review, surgery scheduling, today surgery, ICU/monitoring, pathology, discharge, follow-up, and overdue exceptions.
-- Focused pages for:
-  - `/dashboard/preop`
-  - `/dashboard/surgery`
-  - `/dashboard/pathology`
-  - `/dashboard/followup`
-- Patient detail page with:
-  - basic patient information
-  - perioperative timeline
-  - key clinical actions
-  - pathology entry
-  - AI-style perioperative analysis
-  - CT imaging preview modal
+### 医生端：患者详情与围术期 Timeline
 
-### Patient Mini-App Simulation
+进入患者详情页后，左侧是基础信息，中间是完整围术期 timeline，右侧是当前待办和关键操作。医生可以标记进入手术室、手术完成、转入 ICU、回病房、录入病理并生成随访计划。
 
-- Mobile shell with mini-app style navigation.
-- Check-in form for name, phone, inpatient number, ID suffix, history, allergy, smoking history, and family contact.
-- Exam upload demo with AI-like recognition animation.
-- Task checklist for enhanced CT, pulmonary function, ECG, blood routine, coagulation, liver/kidney function, and anesthesia assessment.
-- Notification center for surgery, ICU, pathology, and follow-up events.
-- Follow-up plan page with next visit date, required exams, treatment reminders, and doctor notes.
+![患者详情与围术期 Timeline](public/readme/patient-detail.png)
+
+### 患者端：手机小程序模拟
+
+患者看到的是一个更温和、更清楚的小程序界面。它不会把复杂医学流程直接丢给患者，而是告诉患者：现在处于什么阶段、下一步做什么、医生有什么新通知。
+
+<p>
+  <img src="public/readme/patient-mini-home.png" alt="患者小程序首页" width="360" />
+  <img src="public/readme/patient-mini-tasks.png" alt="患者小程序待办" width="360" />
+</p>
+
+## 它能帮医生解决什么问题？
+
+### 1. 少靠人脑记流程
+
+传统流程里，医生和护士经常要靠微信群、纸质单、口头交接来记患者进度。ThorFlow 把每个患者放进对应流程池，让团队一眼知道谁还没报道、谁检查没做完、谁已经等医生审核、谁今天手术、谁还没录病理。
+
+### 2. 少漏关键节点
+
+胸外科围术期常见漏点包括：检查做完但医生不知道、手术安排后患者没收到清晰通知、术后 ICU/回病房状态没有同步、病理出来后忘记生成随访计划。ThorFlow 用 timeline、任务和通知把这些节点串起来。
+
+### 3. 让患者更安心
+
+患者最焦虑的往往不是“流程复杂”，而是不知道自己现在到哪一步、还差什么、什么时候手术、下一次复查什么时候。患者端小程序用简单语言告诉患者下一步行动，减少反复打电话和群里追问。
+
+### 4. 适合做科室 Demo 和融资演示
+
+这个项目不是普通后台页面，而是围绕“医生端 + 患者端 + 工作流引擎”的闭环体验设计，适合展示胸外科专病管理、围术期数字化、医疗 AI SaaS、院内流程改造等方向。
+
+## Demo 讲述的完整流程
+
+1. 患者扫码报道
+2. 填写基本信息
+3. 上传术前检查单
+4. 系统模拟 AI 识别检查项目
+5. 患者逐项完成增强 CT、肺功能、心电图、血常规、凝血、肝肾功能、麻醉评估等检查
+6. 医生端收到“检查已完成，等待审核”的提醒
+7. 医生安排手术日期
+8. 患者端收到手术通知
+9. 医生标记进入手术室、手术完成、转入 ICU/监护室、转回病房
+10. 患者端同步收到状态通知
+11. 医生录入病理类型、分期和治疗建议
+12. 系统生成随访计划
+13. 患者端看到复查时间表和医生提醒
+
+## 主要页面
+
+| 页面 | 给谁看 | 说明 |
+| --- | --- | --- |
+| `/dashboard` | 医生 / 管理者 | 胸外科流程控制台，查看所有 workflow pools |
+| `/dashboard/preop` | 医生 | 查看术前检查完成情况和审核提醒 |
+| `/dashboard/surgery` | 医生 | 查看今日手术排班和手术状态 |
+| `/dashboard/pathology` | 医生 | 录入病理、分期和辅助治疗建议 |
+| `/dashboard/followup` | 医生 | 查看今日随访和 AI 生成的复查提醒 |
+| `/patient/PT-1004` | 医生 | 单个患者详情、timeline、AI 分析、关键操作 |
+| `/patient-mini` | 患者 | 小程序首页，查看当前阶段和下一步 |
+| `/patient-mini/tasks` | 患者 | 上传检查单并完成检查任务 |
+| `/patient-mini/notifications` | 患者 | 查看手术、ICU、病理、随访通知 |
+| `/patient-mini/followup` | 患者 | 查看随访计划和复查安排 |
+
+## 推荐演示路径
+
+如果你要给医生、科室主任或投资人演示，建议按这个顺序讲：
+
+1. 打开 `/dashboard`：先展示医生端全局流程池
+2. 打开 `/patient-mini`：展示患者看到的当前阶段和医生通知
+3. 打开 `/patient-mini/tasks`：演示上传检查单和 AI 识别检查项目
+4. 打开 `/dashboard/preop`：展示医生端收到术前检查完成提醒
+5. 打开 `/patient/PT-1004`：展示患者详情、timeline 和关键操作
+6. 打开 `/dashboard/pathology`：演示录入病理和分期
+7. 打开 `/patient-mini/followup`：展示患者端看到随访计划
+
+## 项目由三部分组成
+
+### 医生端
+
+医生端是 Web / Desktop Workflow OS，重点不是“登记患者”，而是“控制流程”。它展示每个患者在哪个池子里、谁需要处理、哪个节点超时、下一步该由谁动作。
+
+### 患者端
+
+患者端是手机小程序模拟。它不追求信息密度，而是追求清楚、温和、可执行：今天做什么、还差什么、医生说了什么、什么时候复查。
 
 ### Workflow Engine
 
-Local workflow utilities in `lib/workflow-engine.ts` support:
+Workflow Engine 是本地 TypeScript 逻辑，负责模拟：
 
-- clear perioperative status definitions
-- next-status calculation
-- timeline event generation
-- patient notification generation
-- exam task generation from recognized orders
-- follow-up plan generation from pathology and staging input
+- 患者状态流转
+- timeline 事件生成
+- 患者端通知生成
+- 检查单识别后生成任务
+- 根据病理和分期生成随访计划
 
-The current implementation uses local mock data and browser storage, while keeping data structures ready for a future Supabase or real backend integration.
+现在它使用本地 mock 数据和浏览器存储，后续可以接 Supabase、医院数据库、PACS、EMR 或真实通知系统。
 
-## Tech Stack
+## 如何本地运行
 
-- **Framework**: Next.js 16 App Router
-- **UI**: React 19, Tailwind CSS 4
-- **Language**: TypeScript
-- **Icons**: lucide-react
-- **Motion**: framer-motion
-- **State**: client-side provider plus localStorage-backed demo data
+先进入项目目录：
 
-## Project Structure
-
-```text
-app/
-  dashboard/              Doctor-side workflow routes
-  patient/[id]/           Doctor-side patient detail page
-  patient-mini/           Patient mini-app simulation
-
-components/
-  dashboard/              Doctor console modules
-  patient/                Patient detail, timeline, actions, pathology
-  patient-mini/           Mobile mini-app views and shell
-  workflow/               Shared workflow page components
-  providers/              Local patient workflow provider
-  ui/                     Small reusable UI primitives
-
-lib/
-  mock-data.ts            Anonymized demo patient data
-  workflow-engine.ts      Workflow status and event logic
-  workflow.ts             Dashboard and timeline helpers
-  followup-templates.ts   Follow-up plan templates
-  notification-templates.ts
+```bash
+cd "/Users/zhangdongming/Library/CloudStorage/OneDrive-个人/学习/vibecoding/thorflow"
 ```
 
-## Getting Started
-
-Install dependencies:
+安装依赖：
 
 ```bash
 npm install
 ```
 
-Run the development server:
+启动开发服务：
 
 ```bash
 npm run dev
 ```
 
-Open:
+打开浏览器访问：
 
 ```text
 http://localhost:3000/dashboard
 ```
 
-The project currently uses Webpack for `dev` and `build` scripts because this local demo has been developed in a OneDrive-synced path where Turbopack can infer the wrong workspace root when multiple lockfiles exist.
-
-## Useful Scripts
+## 常用命令
 
 ```bash
-npm run dev      # start local development server
-npm run build    # production build
-npm run start    # start production server after build
-npm run lint     # run ESLint
+npm run dev      # 启动本地开发服务
+npm run build    # 检查能否正常生产构建
+npm run start    # 运行生产构建后的服务
+npm run lint     # 运行 ESLint 检查
 ```
 
-## Recommended Demo Path
+## 技术栈
 
-Use the following route sequence when presenting the product:
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- lucide-react
+- framer-motion
+- 本地 mock data + localStorage 模拟工作流状态
 
-1. `/dashboard`
-2. `/patient-mini?patient=PT-1004`
-3. `/patient-mini/tasks?patient=PT-1004`
-4. `/dashboard/preop`
-5. `/patient/PT-1004`
-6. `/dashboard/pathology`
-7. `/patient-mini/followup?patient=PT-1004`
-
-## Data and Compliance Notes
-
-- All demo patient names use anonymized labels such as `患者A`, `患者B`, and `患者C`.
-- Phone numbers and inpatient numbers are mock or masked.
-- The app is not a medical device and must not be used for real clinical decision-making.
-- The AI copy, imaging preview, notifications, and follow-up plans are simulated for workflow demonstration only.
-- No real patient data should be committed to this repository.
-
-## Roadmap Ideas
-
-- Supabase-backed patient, task, notification, and timeline persistence.
-- Role-based views for surgeon, nurse, anesthesiology, ICU, and follow-up coordinator.
-- Real notification adapter layer for SMS, enterprise WeChat, or hospital mini-app integration.
-- Structured pathology templates and configurable follow-up rules.
-- Audit log for workflow actions and status transitions.
-- Demo seed/reset controls for investor or clinical presentation scenarios.
-
-## Repository
-
-GitHub remote:
+## 目录结构
 
 ```text
-https://github.com/DonoghZZZ/thorflow.git
+app/
+  dashboard/              医生端流程控制台页面
+  patient/[id]/           医生视角的患者详情页
+  patient-mini/           患者小程序模拟页面
+
+components/
+  dashboard/              医生端看板组件
+  patient/                患者详情、timeline、病理、手术操作组件
+  patient-mini/           小程序外壳、首页、待办、通知、随访组件
+  workflow/               通用工作流页面组件
+  providers/              本地 workflow 状态 provider
+  ui/                     基础 UI 组件
+
+lib/
+  mock-data.ts            匿名演示患者数据
+  workflow-engine.ts      状态流转、通知、任务、随访计划逻辑
+  workflow.ts             看板与 timeline 辅助逻辑
+  followup-templates.ts   随访计划模板
+  notification-templates.ts
+```
+
+## 数据与合规说明
+
+- 项目中不应提交真实患者信息。
+- 当前患者名称统一使用“患者A、患者B、患者C”等匿名格式。
+- 电话、住院号、检查结果均为模拟数据。
+- 项目不是医疗器械，也不能用于真实临床决策。
+- AI 识别、影像预览、通知推送、随访计划均为 Demo 模拟。
+
+## 后续可以继续升级的方向
+
+- 接入 Supabase 或真实后端数据库
+- 增加医生、护士、麻醉、ICU、随访专员等角色权限
+- 增加真实消息适配层，如短信、企业微信、医院小程序
+- 增加可配置的病理模板和随访规则
+- 增加操作审计日志，记录每次状态变更
+- 增加 Demo 一键重置，方便路演和科室演示
+
+## GitHub
+
+```text
+https://github.com/DonoghZZZ/thorflow
 ```
